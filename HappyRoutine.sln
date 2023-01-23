@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HappyRoutine.Models", "Happ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HappyRoutine.Repository", "HappyRoutine.Repository\HappyRoutine.Repository.csproj", "{3A3AAA7A-61C4-408C-950A-88BB4E3282E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HappyRoutine.Identity", "HappyRoutine.Identity\HappyRoutine.Identity.csproj", "{27620972-9025-4C6F-BD7C-7E6B84BDE1D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HappyRoutine.Services", "HappyRoutine.Services\HappyRoutine.Services.csproj", "{1E677735-5579-4461-9AFC-DA342145DD36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{3A3AAA7A-61C4-408C-950A-88BB4E3282E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A3AAA7A-61C4-408C-950A-88BB4E3282E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A3AAA7A-61C4-408C-950A-88BB4E3282E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27620972-9025-4C6F-BD7C-7E6B84BDE1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27620972-9025-4C6F-BD7C-7E6B84BDE1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27620972-9025-4C6F-BD7C-7E6B84BDE1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27620972-9025-4C6F-BD7C-7E6B84BDE1D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E677735-5579-4461-9AFC-DA342145DD36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E677735-5579-4461-9AFC-DA342145DD36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E677735-5579-4461-9AFC-DA342145DD36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E677735-5579-4461-9AFC-DA342145DD36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
