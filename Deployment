@@ -1,0 +1,385 @@
+CREATE DATABASE [RoutineDB]
+GO
+
+
+USE [RoutineDB]
+GO
+
+CREATE SCHEMA [aggregate]
+GO
+
+CREATE TABLE ApplicationUser (
+	ApplicationUserId INT NOT NULL IDENTITY(1, 1),
+	Username VARCHAR(20) NOT NULL,
+	NormalizedUsername VARCHAR(20) NOT NULL,
+	Email VARCHAR(30) NOT NULL,
+	NormalizedEmail VARCHAR(30) NOT NULL,
+	Fullname VARCHAR(30) NULL,
+	PasswordHash NVARCHAR(MAX) NOT NULL,
+	PRIMARY KEY(ApplicationUserId)
+)
+
+CREATE INDEX [IX_ApplicationUser_NormalizedUsername] ON [dbo].[ApplicationUser] ([NormalizedUsername])
+GO
+
+CREATE INDEX [IX_ApplicationUser_NormalizedEmail] ON [dbo].[ApplicationUser] ([NormalizedEmail])
+GO
+
+CREATE TABLE Post (
+	PostId INT NOT NULL IDENTITY(1, 1),
+	ApplicationUserId INT NOT NULL,
+	Content VARCHAR(240) NOT NULL,
+	PublishDate DATETIME NOT NULL DEFAULT GETDATE(),
+	UpdateDate DATETIME NOT NULL DEFAULT GETDATE(),
+	ActiveInd BIT NOT NULL DEFAULT CONVERT(BIT, 1)
+	PRIMARY KEY(PostId),
+	FOREIGN KEY(ApplicationUserId) REFERENCES ApplicationUser(ApplicationUserId),
+)
+GO
+
+CREATE TABLE Comment (
+	CommentId INT NOT NULL IDENTITY(1, 1),
+	ParentCommentId INT NULL,
+	PostId INT NOT NULL,
+	ApplicationUserId INT NOT NULL,
+	Content VARCHAR(300) NOT NULL,
+	PublishDate DATETIME NOT NULL DEFAULT GETDATE(),
+	UpdateDate DATETIME NOT NULL DEFAULT GETDATE(),
+	ActiveInd BIT NOT NULL DEFAULT CONVERT(BIT, 1),
+	PRIMARY KEY(CommentId),
+	FOREIGN KEY(PostId) REFERENCES Post(PostId),
+	FOREIGN KEY(ApplicationUserId) REFERENCES ApplicationUser(ApplicationUserId)
+)
+GO
+
+CREATE VIEW [aggregate].[Post]
+AS
+	SELECT
+		t1.PostId,
+		t1.ApplicationUserId,
+		t2.Username,
+		t1.Content,
+		t1.PublishDate,
+		t1.UpdateDate,
+		t1.ActiveInd
+	FROM
+		dbo.Post t1
+	INNER JOIN
+		dbo.ApplicationUser t2 ON t1.ApplicationUserId = t2.ApplicationUserId
+GO
+
+CREATE VIEW [aggregate].[Comment]
+AS
+	SELECT
+		t1.CommentId,
+		t1.ParentCommentId,
+		t1.PostId,
+		t1.Content,
+		t2.Username,
+		t1.ApplicationUserId,
+		t1.PublishDate,
+		t1.UpdateDate,
+		t1.ActiveInd
+	FROM
+		dbo.Comment t1
+	INNER JOIN
+		dbo.ApplicationUser t2 ON t1.ApplicationUserId = t2.ApplicationUserId
+GO
+
+CREATE TYPE [dbo].[AccountType] AS TABLE(
+	[Username] [varchar](20) NOT NULL,
+	[NormalizedUsername] [varchar](20) NOT NULL,
+	[Email] [varchar](30) NOT NULL,
+	[NormalizedEmail] [varchar](30) NOT NULL,
+	[Fullname] [varchar](30) NULL,
+	[PasswordHash] [nvarchar](max) NOT NULL
+)
+GO
+
+CREATE TYPE [dbo].[CommentType] AS TABLE(
+	[CommentId] [int] NOT NULL,
+	[ParentCommentId] [int] NULL,
+	[PostId] [int] NOT NULL,
+	[Content] [varchar](300) NOT NULL
+)
+GO
+
+CREATE TYPE [dbo].[PostType] AS TABLE(
+	[PostId] [int] NOT NULL,
+	[Content] [varchar](240) NOT NULL
+)
+GO
+
+CREATE PROCEDURE [dbo].[Account_GetByUsername]
+	@NormalizedUsername VARCHAR(20)
+AS
+	SELECT 
+	   [ApplicationUserId]
+      ,[Username]
+      ,[NormalizedUsername]
+      ,[Email]
+      ,[NormalizedEmail]
+      ,[Fullname]
+      ,[PasswordHash]
+	FROM 
+		[dbo].[ApplicationUser] t1 
+	WHERE
+		t1.[NormalizedUsername] = @NormalizedUsername
+
+GO
+
+CREATE PROCEDURE [dbo].[Account_Insert]
+	@Account AccountType READONLY
+AS
+	INSERT INTO 
+		[dbo].[ApplicationUser]
+           ([Username]
+           ,[NormalizedUsername]
+           ,[Email]
+           ,[NormalizedEmail]
+           ,[Fullname]
+           ,[PasswordHash])
+	SELECT
+		 [Username]
+		,[NormalizedUsername]
+		,[Email]
+        ,[NormalizedEmail]
+        ,[Fullname]
+        ,[PasswordHash]
+	FROM
+		@Account;
+
+	SELECT CAST(SCOPE_IDENTITY() AS INT);
+GO
+
+CREATE PROCEDURE [dbo].[Post_Delete]
+	@PostId INT
+AS
+
+	UPDATE [dbo].[Comment]
+	SET 
+		[ActiveInd] = CONVERT(BIT, 0),
+		[UpdateDate] = GETDATE()
+	WHERE 
+		[PostId] = @PostId;
+
+	UPDATE [dbo].[Post]
+	SET
+		[ActiveInd] = CONVERT(BIT, 0),
+		[UpdateDate] = GETDATE()
+	WHERE
+		[PostId] = @PostId
+GO
+
+CREATE PROCEDURE [dbo].[Post_Get]
+	@PostId INT
+AS
+	SELECT 
+		[PostId]
+	   ,[ApplicationUserId]
+       ,[Username]
+       ,[Content]
+       ,[PublishDate]
+       ,[UpdateDate]
+	 FROM
+		[aggregate].[Post] t1
+	 WHERE
+		t1.[PostId] = @PostId AND
+		t1.ActiveInd = CONVERT(BIT, 1)
+GO
+
+CREATE PROCEDURE [dbo].[Post_GetAll]
+	@Offset INT,
+	@PageSize INT
+AS
+	SELECT 
+		[PostId]
+	   ,[ApplicationUserId]
+       ,[Username]
+       ,[Content]
+       ,[PublishDate]
+       ,[UpdateDate]
+	 FROM
+		[aggregate].[Post] t1
+	 WHERE
+		t1.[ActiveInd] = CONVERT(BIT, 1)
+	 ORDER BY
+		t1.[PostId]
+	 OFFSET @Offset ROWS
+	 FETCH NEXT @PageSize ROWS ONLY;
+
+	 SELECT COUNT(*) FROM [aggregate].[Post] t1 WHERE t1.[ActiveInd] = CONVERT(BIT, 1);
+GO
+
+
+CREATE PROCEDURE [dbo].[Post_GetAllFamous]
+AS
+
+	SELECT 
+	TOP 12
+		 t1.[PostId]
+		,t1.[ApplicationUserId]
+		,t1.[Username]
+		,t1.[Content]
+		,t1.[PublishDate]
+		,t1.[UpdateDate]
+	FROM 
+		[aggregate].[Post] t1
+	INNER JOIN
+		[dbo].[Comment] t2 ON t1.PostId = t2.PostId
+	WHERE
+		t1.[ActiveInd] = CONVERT(BIT, 1) AND
+		t2.[ActiveInd] = CONVERT(BIT, 1)
+	GROUP BY
+		t1.[PostId]
+	   ,t1.[ApplicationUserId]
+	   ,t1.[Username]
+	   ,t1.[Content]
+	   ,t1.[PublishDate]
+	   ,t1.[UpdateDate]
+	ORDER BY
+		COUNT(t2.CommentId)
+	DESC
+GO
+
+CREATE PROCEDURE [dbo].[Post_GetByUserId]
+	@ApplicationUserId INT
+AS
+	SELECT 
+		[PostId]
+	   ,[ApplicationUserId]
+       ,[Username]
+       ,[Content]
+       ,[PublishDate]
+       ,[UpdateDate]
+	 FROM
+		[aggregate].[Post] t1
+	 WHERE
+		t1.[ApplicationUserId] = @ApplicationUserId AND
+		t1.[ActiveInd] = CONVERT(BIT, 1)
+GO
+
+
+CREATE PROCEDURE [dbo].[Post_Upsert]
+	@Post PostType READONLY,
+	@ApplicationUserId INT
+AS
+
+	MERGE INTO [dbo].[Post] TARGET
+	USING (
+		SELECT
+			[PostId],
+			@ApplicationUserId [ApplicationUserId],
+			[Content]
+		FROM
+			@Post
+	) AS SOURCE
+	ON 
+	(
+		TARGET.[PostId] = SOURCE.[PostId] AND TARGET.[ApplicationUserId] = SOURCE.[ApplicationUserId]
+	)
+	WHEN MATCHED THEN
+		UPDATE SET
+			TARGET.[Content] = SOURCE.[Content],
+			TARGET.[UpdateDate] = GETDATE()
+	WHEN NOT MATCHED BY TARGET THEN
+		INSERT (
+			[ApplicationUserId],
+			[Content]
+		)
+		VALUES (
+			SOURCE.[ApplicationUserId],
+			SOURCE.[Content]
+		);
+
+	SELECT CAST(SCOPE_IDENTITY() AS INT);
+GO
+
+
+CREATE PROCEDURE [dbo].[Comment_Delete]
+	@CommentId INT
+AS
+
+	DROP TABLE IF EXISTS #CommentsToBeDeleted;
+
+	WITH cte_Comments AS (
+		SELECT
+			t1.[CommentId],
+			t1.[ParentCommentId]
+		FROM
+			[dbo].[Comment] t1
+		WHERE
+			t1.[CommentId] = @CommentId
+		UNION ALL
+		SELECT
+			t2.[CommentId],
+			t2.[ParentCommentId]
+		FROM
+			[dbo].[Comment] t2
+			INNER JOIN cte_Comments t3
+				ON t3.[CommentId] = t2.[ParentCommentId]
+	)
+	SELECT
+		[CommentId],
+		[ParentCommentId]
+	INTO
+		#CommentsToBeDeleted
+	FROM
+		cte_Comments;
+
+	UPDATE t1
+	SET
+		t1.[ActiveInd] = CONVERT(BIT, 0),
+		t1.[UpdateDate] = GETDATE()
+	FROM
+		[dbo].[Comment] t1
+		INNER JOIN #CommentsToBeDeleted t2
+			ON t1.[CommentId]= t2.[CommentId];
+GO
+
+CREATE PROCEDURE [dbo].[Comment_Get]
+	@CommentId INT
+AS
+
+	SELECT 
+		 t1.[CommentId]
+		,t1.[ParentCommentId]
+		,t1.[PostId]
+		,t1.[ApplicationUserId]
+		,t1.[Username]
+		,t1.[Content]
+		,t1.[PublishDate]
+		,t1.[UpdateDate]
+	FROM 
+		[aggregate].[Comment] t1
+	WHERE
+		t1.[CommentId] = @CommentId AND
+		t1.[ActiveInd] = CONVERT(BIT, 1)
+GO
+
+CREATE PROCEDURE [dbo].[Comment_GetAll]
+	@PostId INT
+AS
+	
+	SELECT 
+		 t1.[CommentId]
+		,t1.[ParentCommentId]
+		,t1.[PostId]
+		,t1.[ApplicationUserId]
+		,t1.[Username]
+		,t1.[Content]
+		,t1.[PublishDate]
+		,t1.[UpdateDate]
+	FROM 
+		[aggregate].[Comment] t1
+	WHERE
+		t1.[PostId] = @PostId AND
+		t1.[ActiveInd] = CONVERT(BIT, 1)
+	ORDER BY
+		t1.[UpdateDate]
+	DESC
+
+
+GO
+
+
