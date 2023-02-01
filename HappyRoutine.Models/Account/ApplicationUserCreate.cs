@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace HappyRoutine.Models.Account
 {
     public class ApplicationUserCreate : ApplicationUserLogin

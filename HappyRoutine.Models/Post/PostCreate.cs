@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace HappyRoutine.Models.Post
 {
     public class PostCreate

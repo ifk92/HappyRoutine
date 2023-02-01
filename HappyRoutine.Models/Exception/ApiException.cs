@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace HappyRoutine.Models.Exception
 {
     public class ApiException

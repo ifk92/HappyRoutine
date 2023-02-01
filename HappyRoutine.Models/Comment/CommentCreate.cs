@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace HappyRoutine.Models.Comment
 {
     public class CommentCreate

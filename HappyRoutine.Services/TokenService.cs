@@ -24,7 +24,9 @@ namespace HappyRoutine.Services
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.ApplicationUserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Username)
+
             };
+            var identity = new ClaimsIdentity(claims, "Token");
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 

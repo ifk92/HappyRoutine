@@ -30,7 +30,7 @@ namespace HappyRoutine.Repository
                 await connection.OpenAsync();
 
                 affectedRows = await connection.ExecuteAsync(
-                    "Blog_Delete",
+                    "Post_Delete",
                     new { BlogId = postId },
                     commandType: CommandType.StoredProcedure);
             }
@@ -46,7 +46,7 @@ namespace HappyRoutine.Repository
             {
                 await connection.OpenAsync();
 
-                using (var multi = await connection.QueryMultipleAsync("Blog_GetAll",
+                using (var multi = await connection.QueryMultipleAsync("Post_GetAll",
                     new
                     {
                         Offset = (postPaging.Page - 1) * postPaging.PageSize,
