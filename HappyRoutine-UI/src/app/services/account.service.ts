@@ -19,7 +19,7 @@ export class AccountService {
     private http: HttpClient
   ) {
     const value = localStorage.getItem('happyRoutine-currentUser') || '';
-    this.currentUserSubject$ = new BehaviorSubject<ApplicationUser|null>(JSON.parse(value));
+    this.currentUserSubject$ =  new BehaviorSubject<ApplicationUser|null>(value !== '' ?JSON.parse(value):null);
   }
 
   login(model: ApplicationUserLogin) : Observable<ApplicationUser>  {
