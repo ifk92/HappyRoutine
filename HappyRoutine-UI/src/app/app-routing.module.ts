@@ -1,3 +1,4 @@
+import { RegisterComponent } from './components/register/register.component';
 import { PostEditComponent } from './components/post-components/post-edit/post-edit.component';
 import { PostCardComponent } from './components/post-components/post-card/post-card.component';
 import { PostComponent } from './components/post-components/post/post.component';
@@ -10,7 +11,9 @@ import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
+  {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
   {path: 'posts', component: PostComponent},
   {path: 'posts/:id', component: PostCardComponent},
   {path: 'dashboard/:id', component: PostEditComponent, canActivate: [AuthGuard]},

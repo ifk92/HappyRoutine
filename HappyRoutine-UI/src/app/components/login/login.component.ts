@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
     );
 
     this.accountService.login(applicationUserLogin).subscribe(() => {
-      this.router.navigate(['/posts']);
+      this.router.navigate(['/home']);
     });
   }
 
