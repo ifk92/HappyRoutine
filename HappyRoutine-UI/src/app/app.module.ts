@@ -28,6 +28,7 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PostCreateComponent } from './components/post-components/post-create/post-create.component';
+import { PostsComponent } from './components/post-components/posts/posts.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { PostCreateComponent } from './components/post-components/post-create/po
     NotFoundComponent,
     RegisterComponent,
     DashboardComponent,
-    PostCreateComponent
+    PostCreateComponent,
+    PostsComponent
   ],
   imports: [
     BrowserModule,

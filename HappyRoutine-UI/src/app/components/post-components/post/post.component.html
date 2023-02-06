@@ -1,1 +1,36 @@
-<p>post works!</p>
+<div class="container" *ngIf="!!post" style="display: flex; align-items: center;">
+
+  <div class="user-avatar">
+    <img src="https://image.shutterstock.com/image-vector/man-avatar-profile-picture-vector-260nw-229692004.jpg" alt="Image profil"/>
+  </div>
+
+  <div class="post-content">
+      <div class="post-user-info">
+        <h4>{{post.username}}</h4>
+        <i class="fas fa-check-circle"></i>
+
+        <span>Publié le {{post.publishDate | date: 'dd/MM/yyyy, à HH:mm'}} </span>
+      </div>
+      <a
+      style="cursor: pointer;"
+      [routerLink]="['/posts', post.postId]"
+      class="post-text"
+      >
+      {{ post.content }}
+      </a>
+      <div class="post-icons">
+        <i class="far fa-comment"></i>
+        <i class="far fa-thumbs-up"></i>
+        <i class="far fa-heart"></i>
+        <i class="far fa-share-square"></i>
+
+      </div>
+  </div>
+
+  <!-- <app-comment-system *ngIf="post" [postId]="post.postId"></app-comment-system> -->
+
+</div>
+
+
+
+
