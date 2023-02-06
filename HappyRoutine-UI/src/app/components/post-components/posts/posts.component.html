@@ -1,1 +1,13 @@
-<p>posts works!</p>
+<ng-template [ngIf]="pagedPostResult?.items?.length > 0" [ngIfElse]="noblogs">
+  <div class="container card-columns mt-5 blogs">
+      <app-post-card *ngFor="let blog of pagedPostResult.items" [post]="post"></app-post-card>
+  </div>
+</ng-template>
+
+<ng-template #noblogs>
+  <div class="mt-4">
+      <div class="d-flex justify-content-center">
+          <h3 class="text-dark">There are no blogs published yet...</h3>
+      </div>
+  </div>
+</ng-template>

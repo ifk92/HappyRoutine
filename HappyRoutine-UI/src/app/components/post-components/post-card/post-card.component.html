@@ -1,1 +1,11 @@
-<p>post-card works!</p>
+<div class="card">
+  <div class="card-body">
+
+      <p class="card-text" *ngIf="!!post">{{post.content}}</p>
+
+      <button class="btn btn-xs bg-primary text-light" (click)="readMore(post.postId)">
+          Read More
+      </button>
+
+  </div>
+</div>

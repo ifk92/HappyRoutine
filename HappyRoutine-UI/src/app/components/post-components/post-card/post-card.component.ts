@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Post } from 'src/app/models/post/post.model';
+import { PostService } from 'src/app/services/post.service';
 
 @Component({
   selector: 'app-post-card',
@@ -7,9 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PostCardComponent implements OnInit {
 
-  constructor() { }
+  @Input() post: Post;
+  @Input() index: number;
+
+  constructor(
+    private router: Router,
+    private postService: PostService
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  readMore(postId: number) {
+    this.router.navigate([`/post/${postId}`])
   }
 
 }

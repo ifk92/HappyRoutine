@@ -63,6 +63,23 @@ namespace HappyRoutine.Repository
             return results;
         }
 
+        public async Task<List<Post>> GetAllAsync()
+        {
+            IEnumerable<Post> posts;
+
+            using (var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+            {
+                await connection.OpenAsync();
+
+                posts = await connection.QueryAsync<Post>(
+                    "Post_GetAllFamous",
+                    new { },
+                    commandType: CommandType.StoredProcedure);
+            }
+
+            return posts.ToList();
+        }
+
         public async Task<List<Post>> GetAllByUserIdAsync(int applicationUserId)
         {
             IEnumerable<Post> posts;
