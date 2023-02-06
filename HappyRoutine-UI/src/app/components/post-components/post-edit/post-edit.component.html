@@ -1,1 +1,38 @@
-<p>post-edit works!</p>
+<div class="container">
+
+  <div class="d-flex justify-content-center">
+      <h1 class="display-4 mt-5">{{ isNew() ? 'Create' : 'Edit' }} post</h1>
+  </div>
+
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+
+          <textarea
+              [ngClass]="{'is-invalid' : hasErrors('content') && isTouched('content'),
+                          'is-valid' : !hasErrors('content') && isTouched('content')}"
+              class="form-control form-control-lg"
+              formControlName="content"
+              id="content"
+             ></textarea>
+
+
+          <div *ngIf="hasError('content', 'required')" class="invalid-feedback">
+              Content is required
+          </div>
+
+          <div *ngIf="hasError('content', 'minlength') || hasError('content', 'maxlength')"
+              class="invalid-feedback">
+              Must be between 10-240 characters
+          </div>
+      </div>
+
+      <button class="btn bg-primary text-light mr-2" style="border-radius: 3rem; cursor: pointer; height: 2rem;" [disabled]="!postForm.valid && !!postForm.pristine">
+          Save
+      </button>
+
+
+
+  </form>
+
+</div>

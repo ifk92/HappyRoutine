@@ -15,6 +15,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'posts', component: PostComponent},
+  {path: 'postEdit', component: PostEditComponent},
   {path: 'posts/:id', component: PostCardComponent},
   {path: 'dashboard/:id', component: PostEditComponent, canActivate: [AuthGuard]},
   {path: 'not-found', component: NotFoundComponent},

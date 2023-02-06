@@ -26,6 +26,8 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PostCreateComponent } from './components/post-components/post-create/post-create.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     NavbarComponent,
     NotFoundComponent,
-    RegisterComponent
+    RegisterComponent,
+    DashboardComponent,
+    PostCreateComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,12 @@
+textarea:focus {
+  background-color: #fff;
+	border-color: #1aa1f5;
+}
+
+textarea {
+  overflow: hidden;
+	background-color: #d6e1e9;
+	border: 0.1rem solid #eee;
+	border-radius: 1.5rem;
+	font-size: 1.6rem;
+}
