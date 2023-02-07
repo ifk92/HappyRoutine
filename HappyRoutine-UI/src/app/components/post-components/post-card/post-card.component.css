@@ -114,10 +114,11 @@ a {
 	margin-top: 1rem;
 }
 
-.post-icons i {
-	font-size: 1.8rem;
-	color: #868383;
-	margin-right: 6rem;
+/* comment faire pour que l espace devant, soit egal à l espace derriere */
+ .post-icons i {
+  font-size: 1.8rem;
+  margin-right: 2rem;
+  margin-left: 2rem;
 }
 
 .post-content {

@@ -9,7 +9,7 @@
         <h4>{{post.username}}</h4>
         <i class="fas fa-check-circle"></i>
 
-        <span>Publié le {{post.publishDate | date: 'dd/MM/yyyy, à HH:mm'}} </span>
+        <span>{{post.publishDate | date: 'dd/MM/yy,HH:mm'}} </span>
       </div>
       <a
       style="cursor: pointer;"
