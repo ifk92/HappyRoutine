@@ -11,7 +11,6 @@ import { PostService } from 'src/app/services/post.service';
 export class PostCardComponent implements OnInit {
 
   @Input() post: Post;
-  @Input() index: number;
 
   constructor(
     private router: Router,

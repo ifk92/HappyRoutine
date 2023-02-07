@@ -1,4 +1,4 @@
-<div class="card">
+<!-- <div class="card">
   <div class="card-body">
 
       <p class="card-text" *ngIf="!!post">{{post.content}}</p>
@@ -9,3 +9,29 @@
 
   </div>
 </div>
+ -->
+
+<div class="user-avatar">
+  <img src="https://image.shutterstock.com/image-vector/man-avatar-profile-picture-vector-260nw-229692004.jpg" alt="Image profil"/>
+</div>
+
+<div class="post-content" >
+    <div class="post-user-info">
+      <h4>{{post.username}}</h4>
+      <i class="fas fa-check-circle"></i>
+      <span>@Ivan {{post.publishDate | date:'d MMM y'}} </span>
+    </div>
+    <a
+    style="cursor: pointer;"
+    [routerLink]="['/posts', post.postId]"
+    class="post-text"
+    >
+    {{ post.content }}
+    </a>
+    <div class="post-icons">
+        <i class="glyphicon glyphicon-comment"></i>
+        <i class="glyphicon glyphicon-arrow-up pointable"></i>
+        <i class="glyphicon glyphicon-arrow-down pointable"></i>
+    </div>
+</div>
+

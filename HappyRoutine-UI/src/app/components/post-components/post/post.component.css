@@ -1,6 +1,3 @@
-.blog-image {
-  border-radius: 5px;
-}
 
 .post-content {
   white-space: pre-line;
@@ -13,12 +10,6 @@
   margin: 0 0 1em 0;
 }
 
-@media (min-width: 576px) {
-  .text-wrapper {
-      float: left;
-      margin: 0 1em 0 0;
-  }
-}
 
 .user-avatar {
 	width: 5rem;
@@ -36,6 +27,8 @@
 
 .post-icons {
 	margin-top: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .post-icons i {
@@ -68,6 +61,11 @@
 .post-text {
   font-size: 1.6rem;
   margin-bottom: 1rem;
+}
+
+.post-icon {
+  font-size: 20px;
+  margin-right: 10px;
 }
 
 

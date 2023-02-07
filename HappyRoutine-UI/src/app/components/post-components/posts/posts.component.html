@@ -1,6 +1,8 @@
+
+
 <ng-template [ngIf]="pagedPostResult?.items?.length > 0" [ngIfElse]="noblogs">
-  <div class="container card-columns mt-5 blogs">
-      <app-post-card *ngFor="let blog of pagedPostResult.items" [post]="post"></app-post-card>
+  <div class="container  mt-4">
+      <app-post-card *ngFor="let post of pagedPostResult.items" [post]="post"></app-post-card>
   </div>
 </ng-template>
 
@@ -11,3 +13,20 @@
       </div>
   </div>
 </ng-template>
+
+<div class="container mt-5" *ngIf="pagedPostResult?.totalCount > 0">
+  <div class="d-flex justify-content-center">
+     <pagination
+      [boundaryLinks]="true"
+      [maxSize]="12"
+      [itemsPerPage]="10"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+      [totalItems]="pagedPostResult.totalCount"
+      (pageChanged)="pageChanged($event)"
+     ></pagination>
+  </div>
+</div>
+
