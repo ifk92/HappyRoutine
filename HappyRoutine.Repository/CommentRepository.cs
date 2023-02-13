@@ -17,7 +17,7 @@ namespace HappyRoutine.Repository
 
         public CommentRepository(IConfiguration config)
         {
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public async Task<int> DeleteAsync(int commentId)

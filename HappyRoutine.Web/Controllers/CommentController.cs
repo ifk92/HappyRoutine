@@ -15,14 +15,16 @@ namespace HappyRoutine.Web.Controllers
 
         public CommentController(ICommentRepository commentRepository)
         {
-            _commentRepository = commentRepository;
+            _commentRepository = commentRepository ?? throw new ArgumentNullException(nameof(commentRepository));
         }
 
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Comment>> Create(CommentCreate commentCreate)
         {
-            int applicationUserId = int.Parse(User.Claims.First(i => i.Type == JwtRegisteredClaimNames.NameId).Value);
+            int applicationUserId = int.Parse(User.Claims.First(i => i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value);
+
+            // int applicationUserId = int.Parse(User.Claims.First(i => i.Type == JwtRegisteredClaimNames.NameId).Value);
 
             var createdComment = await _commentRepository.UpsertAsync(commentCreate, applicationUserId);
 

@@ -9,7 +9,7 @@ namespace HappyRoutine.Repository
 {
     public interface IPostRepository
     {
-        public Task<Post> UpsertAsync(PostCreate postCreate, int applicationUserId);
+        public Task<Post> UpsertAsync(PostCreateDto postCreate, int applicationUserId);
         public Task<PagedResults<Post>> GetAllAsync(PostPaging postPaging);
         public Task<Post> GetAsync(int postId);
         public Task<int> DeleteAsync(int postId);

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HappyRoutine.Models.Post
 {
-    public class PostCreate
+    public class PostCreateDto
     {
         public int PostId { get; set; }
     

@@ -1,4 +1,4 @@
-export class Comment {
+export class IComment {
 
   constructor(
     public commentId: number,

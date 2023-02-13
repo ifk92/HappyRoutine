@@ -19,9 +19,9 @@ namespace HappyRoutine.Web.Controllers
             UserManager<ApplicationUserIdentity> userManager,
             SignInManager<ApplicationUserIdentity> signInManager)
         {
-            _tokenService = tokenService;
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
         [HttpPost("register")]

@@ -1,6 +1,6 @@
 namespace HappyRoutine.Models.Post
 {
-    public class Post:PostCreate
+    public class Post : PostCreateDto
     {
         public string Username { get; set; }
 

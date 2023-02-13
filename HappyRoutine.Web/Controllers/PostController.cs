@@ -1,13 +1,8 @@
-﻿using HappyRoutine.Models.Account;
-using HappyRoutine.Models.Post;
+﻿using HappyRoutine.Models.Post;
 using HappyRoutine.Repository;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 
 namespace HappyRoutine.Web.Controllers
@@ -17,19 +12,23 @@ namespace HappyRoutine.Web.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
-
+        // TODO Mapping & Logger
         public PostController(IPostRepository postRepository)
         {
-            _postRepository = postRepository;
+            _postRepository = postRepository ?? throw new ArgumentNullException(nameof(postRepository));
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Post>> Create(PostCreate postCreate)
+        public async Task<ActionResult<Post>> Create(PostCreateDto postCreateDto)
         {
+            if (postCreateDto == null)
+            {
+                return BadRequest();
+            }
 
-            int applicationUserId = int.Parse(User.Claims.First(i => i.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value);
-            var post = await _postRepository.UpsertAsync(postCreate, applicationUserId);
+            int applicationUserId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var post = await _postRepository.UpsertAsync(postCreateDto, applicationUserId);
 
             return Ok(post);
         }
@@ -37,17 +36,41 @@ namespace HappyRoutine.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResults<Post>>> GetAll([FromQuery] PostPaging postPaging)
         {
-            var posts = await _postRepository.GetAllAsync(postPaging);
+            try
+            {
+                var posts = await _postRepository.GetAllAsync(postPaging);
 
-            return Ok(posts);
+                return Ok(posts);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest("Failed to get posts");
+            }
+
         }
 
         [HttpGet("{postId}")]
         public async Task<ActionResult<Post>> Get(int postId)
         {
-            var post = await _postRepository.GetAsync(postId);
 
-            return Ok(post);
+            try
+            {
+                var post = await _postRepository.GetAsync(postId);
+
+                if (post == null)
+                {
+                    return BadRequest("Post not found");
+                }
+                return Ok(post);
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest("Failed to get post");
+            }
+
         }
 
         [HttpGet("user/{applicationUserId}")]
@@ -74,18 +97,17 @@ namespace HappyRoutine.Web.Controllers
 
             var foundPost = await _postRepository.GetAsync(postId);
 
-            if (foundPost == null) return BadRequest("Post does not exist.");
+            if (foundPost == null) return NotFound("Post not found.");
 
-            if (foundPost.ApplicationUserId == applicationUserId)
+            if (foundPost.ApplicationUserId != applicationUserId)
             {
-                var affectedRows = await _postRepository.DeleteAsync(postId);
+                return Unauthorized("You don't have permission to delete this post.");
+            }
 
-                return Ok(affectedRows);
-            }
-            else
-            {
-                return BadRequest("You didn't create this post.");
-            }
+            var affectedRows = await _postRepository.DeleteAsync(postId);
+
+            return Ok(affectedRows);
         }
+
     }
 }
